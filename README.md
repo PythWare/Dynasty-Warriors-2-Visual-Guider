@@ -39,13 +39,14 @@ There are Genetic Algorithm features as part of Visual Guider which I cover in G
 <img width="1746" height="924" alt="s6" src="https://github.com/user-attachments/assets/92362ca5-c3c0-408c-b170-586460634085" />
 <img width="1747" height="929" alt="s7" src="https://github.com/user-attachments/assets/506313a7-16d7-4941-a811-ef0588602dd6" />
 <img width="1743" height="925" alt="s8" src="https://github.com/user-attachments/assets/c42dbdd6-f0e7-423c-9926-05bf62053014" />
-<img width="1749" height="929" alt="s9" src="https://github.com/user-attachments/assets/79d64460-d26a-4e01-85b8-487c02e20efd" />
-<img width="1746" height="925" alt="s10" src="https://github.com/user-attachments/assets/38dfd1f1-3c9f-4257-be18-86949237068e" />
-<img width="1748" height="925" alt="s11" src="https://github.com/user-attachments/assets/07dd13eb-f1ba-43b2-bb72-6a9c15016969" />
-<img width="1746" height="926" alt="s12" src="https://github.com/user-attachments/assets/955442db-effb-45a3-a5f4-8960e60da54b" />
-<img width="1748" height="925" alt="s13" src="https://github.com/user-attachments/assets/b6bca47b-8d24-40e1-a2fe-1fa7c3016219" />
-<img width="1747" height="930" alt="s14" src="https://github.com/user-attachments/assets/486ef7d1-f158-41dd-87c7-2fe37e61d7d7" />
-<img width="1746" height="926" alt="s15" src="https://github.com/user-attachments/assets/ce630add-09d4-4c65-8845-7556c12c2272" />
+<img width="1741" height="922" alt="s9" src="https://github.com/user-attachments/assets/71855f85-98e8-4413-adb5-3c315af8282d" />
+<img width="1744" height="925" alt="s10" src="https://github.com/user-attachments/assets/f06a29d2-7503-4bf6-b93e-d8ec6864fbcb" />
+<img width="1742" height="922" alt="s11" src="https://github.com/user-attachments/assets/90218b9b-603d-4837-90b1-d688a450e0b1" />
+<img width="1742" height="923" alt="s12" src="https://github.com/user-attachments/assets/9a1da724-66f2-4cf6-aa81-6eeed9cfbfdb" />
+<img width="1743" height="922" alt="s13" src="https://github.com/user-attachments/assets/c19e35ab-90f5-4e3b-a9bc-a649ee5251fd" />
+<img width="1740" height="922" alt="s14" src="https://github.com/user-attachments/assets/56d2d757-cdc2-4192-8975-50ed9e126649" />
+<img width="1741" height="920" alt="s15" src="https://github.com/user-attachments/assets/e7489ab5-5d86-485e-9420-9e7763066067" />
+<img width="1743" height="925" alt="s16" src="https://github.com/user-attachments/assets/5b1a2882-64e4-4c63-92e5-2f1b80683b03" />
 
 # Genetic Algorithm Info
 
