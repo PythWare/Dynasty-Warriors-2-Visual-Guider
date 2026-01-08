@@ -1,6 +1,6 @@
 # Dynasty Warriors 2 Visual Guider Info
 
-Dynasty Warriors 2 Visual Guider is a High End GUI Standalone Stage Data modding tool that simplifies modding Stage Data by providing a visual experience for modding. It comes with full modding support of all stages in DW2, the coordinate guider system is built into it and redesigned, a high end mod manager that includes collision detection between mods as well as preview images for each mod, Genetic Algorithm support which i'll cover in Genetic Algorithm Info, and many more features. Visual Guider isn't ready to release yet but when it is, this repository will have it.
+Dynasty Warriors 2 Visual Guider is a High End GUI Standalone Stage Data modding tool that simplifies modding Stage Data by providing a visual experience for modding. It comes with full modding support of all stages in DW2, the coordinate guider system is built into it and redesigned, a high end mod manager (explained in Features of Visual Guider For Stage Modding), Genetic Algorithm support which i'll cover in Genetic Algorithm Info, and many more features. Visual Guider isn't ready to release yet but when it is, this repository will have it.
 
 # Features of Visual Guider For Stage Modding
 
@@ -26,7 +26,7 @@ A Multi-Select feature where you can select more than 1 squad, move them around 
 
 Auto populating the entire map with all units on the stage for both sides, you can mod all units in the stage, you can move around the image, zoom in/out, clicking on a marker highlights which unit is selected and displays their stage data, clicking a unit in the listbox takes you directly to the unit you selected, add new units to the stage or delete, dragging the marker of a unit auto updates the current coordinates so you don't have manually type them, selecting a marker/unit from the list or on the map changes the color to green to visually show the current unit selected, filter to find units faster, etc.
 
-Visual Guider also comes with a Mod Creator/Mod Manager as part of it to make it a standalone tool. The new mod manager has collision detection to ensure mods that mod the same data don't conflict as well as displaying info like author of the mod, version of mod, mod description, images of mod, etc. Mods you select in Mod Manager show preview images of the mod too. 
+Visual Guider also comes with a Mod Creator/Mod Manager as part of it to make it a standalone tool. The new mod manager has collision detection to ensure mods that mod the same data don't conflict as well as displaying info like author of the mod, version of mod, mod description, images of mod, etc. Mods you select in Mod Manager show preview images of the mod too. I custom designed the mod format (think of it like a mini container) that is created with Mod Created to be shareable, as long as you/others have the Visual Guider tool you can apply/disable any mods created with Visual Guider without issue. It's meant to be designed in a way that makes sharing custom stages easy.
 
 There are Genetic Algorithm features as part of Visual Guider which I cover in Genetic Algorithm Info.
 
@@ -46,8 +46,6 @@ There are Genetic Algorithm features as part of Visual Guider which I cover in G
 <img width="1748" height="925" alt="s13" src="https://github.com/user-attachments/assets/b6bca47b-8d24-40e1-a2fe-1fa7c3016219" />
 <img width="1747" height="930" alt="s14" src="https://github.com/user-attachments/assets/486ef7d1-f158-41dd-87c7-2fe37e61d7d7" />
 <img width="1746" height="926" alt="s15" src="https://github.com/user-attachments/assets/ce630add-09d4-4c65-8845-7556c12c2272" />
-
-
 
 # Genetic Algorithm Info
 
