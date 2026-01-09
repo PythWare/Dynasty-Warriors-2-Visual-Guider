@@ -14,6 +14,8 @@ Credit goes to Michael, Passion Wagon, Aurvi, and The Tempest for documentation 
 
 # Quick Guide Usage
 
+Make sure to backup your Dynasty Warriors 2 bin file before using. The Mod Manager disables mods (if you're using file mods created) and reverts changes but it's always good to have a backup.
+
 If you have python 3 installed, you should be able to double click on the .pyw file without issue. If somehow you have issues then open command prompt in the current directory and type `python DW2_SGuider.pyw`
 
 When you mod squads, make sure to click Update Squad Data button in Squad Editor before changing to a different squad. If you want to batch mod more than 1 squad, hold down the left click and select all the squads you want selected. Whenever squads have different values during Multi-Select, the entry will say "Mixed". If you want to have all selected squads have the same value (i.e., making every squad have 8 guards) then delete the "Mixed" and enter the value you want to use and then click Update Squad Data.
