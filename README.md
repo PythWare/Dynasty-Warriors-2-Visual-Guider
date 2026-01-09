@@ -14,6 +14,8 @@ Credit goes to Michael, Passion Wagon, Aurvi, and The Tempest for documentation 
 
 # Quick Guide Usage
 
+If you have python 3 installed, you should be able to double click on the .pyw file without issue. If somehow you have issues then open command prompt in the current directory and type `python DW2_SGuider.pyw`
+
 When you mod squads, make sure to click Update Squad Data button in Squad Editor before changing to a different squad. If you want to batch mod more than 1 squad, hold down the left click and select all the squads you want selected. Whenever squads have different values during Multi-Select, the entry will say "Mixed". If you want to have all selected squads have the same value (i.e., making every squad have 8 guards) then delete the "Mixed" and enter the value you want to use and then click Update Squad Data.
 
 For entries that have a string/text with a value (i.e., North: 0), make sure to edit the value that comes after the colon. The string/text is meant to help you understand instead of just seeing a bunch of numbers.
@@ -83,3 +85,7 @@ Also, keep in mind when you use pnach mods the changes don't apply until the bat
 # Mod Manager Section
 
 Mod Manager is only for file mods, it's not used for pnach handling. It automatically creates backups of the stages and morale data to ensure if you disable a mod, the original data is returned.
+
+# Extra Info
+
+I decided to make Visual Guider a single file instead of a package release (having multiple python files within a folder for those who aren't aware), i'm not changing that. The code is clean and well organized.
