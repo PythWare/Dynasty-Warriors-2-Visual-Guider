@@ -26,6 +26,10 @@ Holding right click moves around the image, you can also use the scrollbars if y
 
 To mod Morale, you must mod the force leader (unless doing Multi-Select which affects everyone). What that means is if you want to mod the morale of Cao Cao's force, don't click on a subofficer/troops serving under him to mod the morale. Instead, click the force leader which in this example is Cao Cao. Troops/officers that serve under a Force Leader do not have their own morale in Dynasty Warriors 2. Instead the troops/officers serving under a force leader have the current morale the force leader does. So if say you're modding Chang Ban and want Zhao Yun's troops to have better morale, mod Zhao yun's morale entry since he's the force leader of those who serve under him.
 
+# Using Auto-Balance and Generate Stage
+
+The GA will generate the new squads but they're placeholder squads, make sure you mod the squads with the values you desire whether individually or all at once with Multi-Select.
+
 # Features of Visual Guider For Stage Modding
 
 Visual Guider properly converts ingame X and Y coordinates to pixel positions on the minimaps, what this means is the X and Y coordinates used in Dynasty Warriors 2 match what you see in Visual Guideer. I scaled the minimaps to the same geometry as the 3D maps so that X/Y to pixel position is a 1 to 1 match. Which means any coordinate you see in Visual Guider is the correct X and Y coordinate that applies to the game. This is meant to make modding stage data significantly easier so that you can visually see where on the map the units will spawn and where they're located.
