@@ -1,6 +1,16 @@
 # Dynasty Warriors 2 Visual Guider Info
 
-Dynasty Warriors 2 Visual Guider is a High End GUI Standalone Stage Data modding tool that simplifies modding Stage Data by providing a visual experience for modding. It comes with full modding support of all stages in DW2, the coordinate guider system is built into it and redesigned, a high end mod manager (explained in Features of Visual Guider For Stage Modding), Genetic Algorithm support which i'll cover in Genetic Algorithm Info, and many more features. Visual Guider isn't ready to release yet but when it is, this repository will have it.
+Dynasty Warriors 2 Visual Guider is a High End GUI Standalone Stage Data modding tool that simplifies modding Stage Data by providing a visual experience for modding. It comes with full modding support of all stages in DW2, the coordinate guider system is built into it and redesigned, a high end mod manager (explained in Features of Visual Guider For Stage Modding), Genetic Algorithm support which i'll cover in Genetic Algorithm Info, Auto pnach generation (review Generate Pnach Section), and many more features.
+
+# Requirements To Use Visual Guider
+
+Python 3 as well as Pillow. Pillow is an imaging library. To install pillow, open a command prompt and type the command `pip install pillow` , then press enter.
+
+The US version of Dynasty Warriors 2.
+
+# Credits
+
+Credit goes to Michael, Passion Wagon, Aurvi, and The Tempest for documentation with Stage/Morale Data. I only take credit for the code and design of Visual Guider. Michael, Passion Wagon, Aurvi, and The Tempest have helped a lot with understanding Stage Data.
 
 # Features of Visual Guider For Stage Modding
 
@@ -11,6 +21,8 @@ An optional toggle for morale bars has been added. Allow me to explain. Every sq
 You can mod morale data.
 
 There is now a global morale bar, it dynamically updates based on the total morale of side 1 and side 2. Every stage now has a global morale bar in Visual Guider.
+
+You can generate a pnach file of your mod if you prefer pnach instead of file mods.
 
 I have updated every label in Squad Editor to have hover infos, when you hover over a label a description will be displayed explaining what the value is/does. Also, several entries have been updated to have a more user friendly value display such as direction, orders, unit type, ai type, etc. For example, He Jin's Unit Type now displays Commander: 1, to change his or anyone's value that has a string as part of the fields you mod the value that comes after the colon (i.e., i'd change He Jin's Unit Type to NPC Officer by setting the 1 to 4) and that would update the string attached with the value.
 
@@ -31,23 +43,31 @@ Visual Guider also comes with a Mod Creator/Mod Manager as part of it to make it
 There are Genetic Algorithm features as part of Visual Guider which I cover in Genetic Algorithm Info.
 
 # Screenshots of Visual Guider
-<img width="1743" height="923" alt="s1" src="https://github.com/user-attachments/assets/4ed9b25f-425e-4136-b225-aef4b03d8a0c" />
-<img width="1743" height="929" alt="s2" src="https://github.com/user-attachments/assets/a45594f6-6441-428e-b04b-65c9367dc16d" />
-<img width="1744" height="923" alt="s3" src="https://github.com/user-attachments/assets/dbe216b9-effd-46c9-a3e2-9219ee72b1ca" />
-<img width="1744" height="926" alt="s4" src="https://github.com/user-attachments/assets/ed9f1647-6ca8-48f4-847b-66cf55829a9f" />
-<img width="1744" height="931" alt="s5" src="https://github.com/user-attachments/assets/aae34dfd-b4ea-4bbf-a4cb-7a7977bc0615" />
-<img width="1746" height="924" alt="s6" src="https://github.com/user-attachments/assets/92362ca5-c3c0-408c-b170-586460634085" />
-<img width="1747" height="929" alt="s7" src="https://github.com/user-attachments/assets/506313a7-16d7-4941-a811-ef0588602dd6" />
-<img width="1743" height="925" alt="s8" src="https://github.com/user-attachments/assets/c42dbdd6-f0e7-423c-9926-05bf62053014" />
-<img width="1741" height="922" alt="s9" src="https://github.com/user-attachments/assets/71855f85-98e8-4413-adb5-3c315af8282d" />
-<img width="1744" height="925" alt="s10" src="https://github.com/user-attachments/assets/f06a29d2-7503-4bf6-b93e-d8ec6864fbcb" />
-<img width="1742" height="922" alt="s11" src="https://github.com/user-attachments/assets/90218b9b-603d-4837-90b1-d688a450e0b1" />
-<img width="1742" height="923" alt="s12" src="https://github.com/user-attachments/assets/9a1da724-66f2-4cf6-aa81-6eeed9cfbfdb" />
-<img width="1743" height="922" alt="s13" src="https://github.com/user-attachments/assets/c19e35ab-90f5-4e3b-a9bc-a649ee5251fd" />
-<img width="1740" height="922" alt="s14" src="https://github.com/user-attachments/assets/56d2d757-cdc2-4192-8975-50ed9e126649" />
-<img width="1741" height="920" alt="s15" src="https://github.com/user-attachments/assets/e7489ab5-5d86-485e-9420-9e7763066067" />
-<img width="1743" height="925" alt="s16" src="https://github.com/user-attachments/assets/5b1a2882-64e4-4c63-92e5-2f1b80683b03" />
+<img width="1833" height="934" alt="s1" src="https://github.com/user-attachments/assets/c1eae034-b8a5-4c17-8941-2d37e6873e17" />
+<img width="1837" height="929" alt="s2" src="https://github.com/user-attachments/assets/d37ec1d3-bc54-4917-9297-f215e570cf66" />
+<img width="1840" height="929" alt="s3" src="https://github.com/user-attachments/assets/fff692fe-dd08-4543-a99f-0331aee3cf36" />
+<img width="1830" height="934" alt="s4" src="https://github.com/user-attachments/assets/2085a9c0-05e6-45e1-b5dd-ee238c4f5bd0" />
+<img width="1832" height="924" alt="s5" src="https://github.com/user-attachments/assets/96e1be59-cc72-4b97-8567-0a1f7f7946d8" />
+<img width="1835" height="929" alt="s6" src="https://github.com/user-attachments/assets/cafd77ee-c774-4fc5-ae28-bc2d35e2a275" />
+<img width="1834" height="923" alt="s7" src="https://github.com/user-attachments/assets/d5d87b25-70ec-4e2d-848a-bfbe0eefb865" />
+<img width="1834" height="927" alt="s8" src="https://github.com/user-attachments/assets/1604eefa-59ad-4516-b5bb-e8d62ab27499" />
+<img width="1836" height="929" alt="s9" src="https://github.com/user-attachments/assets/be06fc09-b653-442d-9404-91edbe496101" />
+<img width="1834" height="927" alt="s10" src="https://github.com/user-attachments/assets/7a478bcc-3934-41d3-8ef3-35b81692de87" />
+<img width="1839" height="926" alt="s11" src="https://github.com/user-attachments/assets/b91fc651-b893-4cc3-b9d1-6d41e7847063" />
+<img width="1836" height="925" alt="s12" src="https://github.com/user-attachments/assets/59038ce7-3dbf-41ed-9b66-1c7f42ea687a" />
+<img width="1834" height="929" alt="s13" src="https://github.com/user-attachments/assets/d4288599-50e8-42a2-9a9f-5cef16275e31" />
+<img width="1834" height="927" alt="s14" src="https://github.com/user-attachments/assets/7aff0d20-c0c4-4893-ab60-7c5239ec2307" />
 
 # Genetic Algorithm Info
 
 I have built a Genetic Algorithm as part of the Visual Guider to enhance modding Dynasty Warriors 2. It includes enhanced auto-balancing (the GA calculates the TCP and spawns new squads for the side it detects is underpowered, it ensures squads spawn in valid regions too), a predict feature (the GA runs a calculation of the current TCP for both sides and gives an estimate of the likely outcome), Stage Generation (the GA creates new stage battles, every time you run Generate Stage it will wipe all current squads and spawn new ones at various locations across the map to create new playable battles for the stages). The GA is an optional feature you can use, you're not required to use it.
+
+The GA isn't perfect though, sometimes a squad may be set to spawn in unplayable zones like water or out of the map. It's easy to fix that though, just click on the marker/squad and place it wherever you want on the map.
+
+# Generate Pnach Section
+
+Visual Guider can automatically generate pnach mods if you prefer to use pnach over file mods. Keep in mind if you personally mod DW2's bin file, it may change the CRC. If you play and find no pnach codes were applied, check to see what the current CRC is of Dynasty Warriors 2 (PCSX2's show console will inform you of the current CRC when playing). By default the pnach filename is 5B665C0B but you can change it to something like 5B665C0B_Custom_Stage, 5B665C0B_Maxed Forces, etc. If DW2 has a different CRC then just rename the filename to the current CRC to apply the pnach mod.
+
+# Mod Manager Section
+
+Mod Manager is only for file mods, it's not used for pnach handling. It automatically creates backups of the stages and morale data to ensure if you disable a mod, the original data is returned.
