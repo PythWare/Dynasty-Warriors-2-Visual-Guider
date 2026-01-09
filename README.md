@@ -12,6 +12,16 @@ The US version of Dynasty Warriors 2.
 
 Credit goes to Michael, Passion Wagon, Aurvi, and The Tempest for documentation with Stage/Morale Data. I only take credit for the code and design of Visual Guider. Michael, Passion Wagon, Aurvi, and The Tempest have helped a lot with understanding Stage Data.
 
+# Quick Guide Usage
+
+When you mod squads, make sure to click Update Squad Data button in Squad Editor before changing to a different squad. If you want to batch mod more than 1 squad, hold down the left click and select all the squads you want selected. Whenever squads have different values during Multi-Select, the entry will say "Mixed". If you want to have all selected squads have the same value (i.e., making every squad have 8 guards) then delete the "Mixed" and enter the value you want to use and then click Update Squad Data.
+
+For entries that have a string/text with a value (i.e., North: 0), make sure to edit the value that comes after the colon. The string/text is meant to help you understand instead of just seeing a bunch of numbers.
+
+Holding right click moves around the image, you can also use the scrollbars if you prefer.
+
+To mod Morale, you must mod the force leader (unless doing Multi-Select which affects everyone). What that means is if you want to mod the morale of Cao Cao's force, don't click on a subofficer/troops serving under him to mod the morale. Instead, click the force leader which in this example is Cao Cao. Troops/officers that serve under a Force Leader do not have their own morale in Dynasty Warriors 2. Instead the troops/officers serving under a force leader have the current morale the force leader does. So if say you're modding Chang Ban and want Zhao Yun's troops to have better morale, mod Zhao yun's morale entry since he's the force leader of those who serve under him.
+
 # Features of Visual Guider For Stage Modding
 
 Visual Guider properly converts ingame X and Y coordinates to pixel positions on the minimaps, what this means is the X and Y coordinates used in Dynasty Warriors 2 match what you see in Visual Guideer. I scaled the minimaps to the same geometry as the 3D maps so that X/Y to pixel position is a 1 to 1 match. Which means any coordinate you see in Visual Guider is the correct X and Y coordinate that applies to the game. This is meant to make modding stage data significantly easier so that you can visually see where on the map the units will spawn and where they're located.
@@ -67,6 +77,8 @@ The GA isn't perfect though, sometimes a squad may be set to spawn in unplayable
 # Generate Pnach Section
 
 Visual Guider can automatically generate pnach mods if you prefer to use pnach over file mods. Keep in mind if you personally mod DW2's bin file, it may change the CRC. If you play and find no pnach codes were applied, check to see what the current CRC is of Dynasty Warriors 2 (PCSX2's show console will inform you of the current CRC when playing). By default the pnach filename is 5B665C0B but you can change it to something like 5B665C0B_Custom_Stage, 5B665C0B_Maxed Forces, etc. If DW2 has a different CRC then just rename the filename to the current CRC to apply the pnach mod.
+
+Also, keep in mind when you use pnach mods the changes don't apply until the battle starts. So if you changed the coordinates of where people spawn, it may not update until the battle starts. That's not an issue with Visual Guider, that's just how pnach works. If you want to see the changes before the battle starts, use file mods created instead (.DW2YTR, .DW2HLG, .DW2GD, .DW2CBan, .DW2CBi, .DW2HF, .DW2YL, .DW2WZP files).
 
 # Mod Manager Section
 
