@@ -974,8 +974,9 @@ class DW2CoordinateGuider:
     def __init__(self, root):
         self.root = root
         self.root.title("DW2 Visual Guider")
-        self.root.geometry("1840x900") 
-
+        # SAFE RESOLUTION: 1280x768 fits on 1080p screens even at 125% scaling
+        self.root.geometry("1280x768") 
+        
         self.base_dir = os.path.dirname(os.path.abspath(__file__))
         self.maps_dir = os.path.join(self.base_dir, "maps")
         os.makedirs(self.maps_dir, exist_ok=True)
@@ -995,9 +996,9 @@ class DW2CoordinateGuider:
         self.original_height = 800
         self.scale = 1.0
         self.zoom_level = 1.0
-        
+       
         self.base_image = None
-        self.current_pil_image = None # For Pixel Analysis
+        self.current_pil_image = None 
         self.display_image = None
         self.image_id = None
 
@@ -1005,14 +1006,13 @@ class DW2CoordinateGuider:
         self.slots = [] 
         self.markers = [] 
         
-        self.selected_indices = set() # Set of integers
+        self.selected_indices = set() 
         self.drag_start_x = None
         self.drag_start_y = None
         self.drag_rect_id = None
-        self.dragging_unit_idx = None # If dragging units
+        self.dragging_unit_idx = None 
         
-        # Visual Options
-        self.show_guards_var = tk.BooleanVar(value=True) # Default ON
+        self.show_guards_var = tk.BooleanVar(value=True) 
         
         self.entry_vars = {} 
         self.list_map = []
@@ -1021,15 +1021,13 @@ class DW2CoordinateGuider:
         self.load_stage_data(0)
 
     def _setup_ui(self):
-        main_frame = tk.Frame(self.root)
-        main_frame.pack(fill=tk.BOTH, expand=True)
+        # Main container is a PanedWindow (Draggable divider)
+        main_paned = tk.PanedWindow(self.root, orient=tk.HORIZONTAL, sashwidth=4, bg="#d9d9d9")
+        main_paned.pack(fill=tk.BOTH, expand=True)
 
-        left_frame = tk.Frame(main_frame)
-        left_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-
-        # Wide Right Panel for Editor
-        right_frame = tk.Frame(main_frame, width=650) # Changed from 500 to 650
-        right_frame.pack(side=tk.RIGHT, fill=tk.Y, padx=10, pady=10)
+        # left panel, the map
+        left_frame = tk.Frame(main_paned)
+        main_paned.add(left_frame, minsize=600, stretch="always")
 
         # Top Bar
         top_bar = tk.Frame(left_frame)
@@ -1037,36 +1035,23 @@ class DW2CoordinateGuider:
         
         tk.Button(top_bar, text="Load DW2.bin", command=self.browse_bin_file).pack(side=tk.LEFT, padx=5)
         tk.Label(top_bar, text="Stage:").pack(side=tk.LEFT)
-        self.stage_combo = ttk.Combobox(top_bar, values=STAGE_NAMES, state="readonly", width=25)
+        self.stage_combo = ttk.Combobox(top_bar, values=STAGE_NAMES, state="readonly", width=18)
         self.stage_combo.current(0)
         self.stage_combo.pack(side=tk.LEFT, padx=5)
         self.stage_combo.bind("<<ComboboxSelected>>", self.on_stage_changed)
         
-        # Guards Checkbox
-        tk.Checkbutton(top_bar, text="Show Guards", variable=self.show_guards_var, command=self.refresh_markers).pack(side=tk.LEFT, padx=10)
-
+        tk.Checkbutton(top_bar, text="Guards", variable=self.show_guards_var, command=self.refresh_markers).pack(side=tk.LEFT, padx=5)
         self.show_morale_var = tk.BooleanVar(value=False)
-        tk.Checkbutton(top_bar, text="Show Morale", variable=self.show_morale_var, command=self.refresh_markers).pack(side=tk.LEFT, padx=5)
+        tk.Checkbutton(top_bar, text="Morale", variable=self.show_morale_var, command=self.refresh_markers).pack(side=tk.LEFT, padx=5)
         
-        # Buttons
-        tk.Button(top_bar, text="Mod Manager", command=self.open_mod_manager, 
-                  bg=LILAC, fg="white", font=("Arial", 9, "bold")).pack(side=tk.RIGHT, padx=5)
-        tk.Button(top_bar, text="Save Mod File", command=self.save_mod_file, bg="#ddffdd").pack(side=tk.RIGHT, padx=5)
-
-        tk.Button(top_bar, text="Gen PNACH", command=self.generate_pnach, 
-                  bg="#8A2BE2", fg="white", font=("Arial", 9, "bold")).pack(side=tk.RIGHT, padx=5)
-        
-        tk.Button(top_bar, text="Predict", command=self.calculate_likely_outcome, 
-                  bg=GOLD_BTN, fg="black", font=("Arial", 9, "bold")).pack(side=tk.RIGHT, padx=5)
-
-        tk.Button(top_bar, text="Generate Stage", command=self.generate_procedural_stage,
-                  bg=ORANGE_BTN, fg="black", font=("Arial", 9, "bold")).pack(side=tk.RIGHT, padx=5)
-
-        tk.Button(top_bar, text="Randomize Stats", command=self.open_stat_randomizer, 
-                  bg="#FF69B4", fg="black", font=("Arial", 9, "bold")).pack(side=tk.RIGHT, padx=5)
-        
-        tk.Button(top_bar, text="Auto-Balance", command=self.run_auto_balance, 
-                  bg=CYAN_BTN, fg="black", font=("Arial", 9, "bold")).pack(side=tk.RIGHT, padx=20)
+        # Right aligned buttons
+        tk.Button(top_bar, text="Mod Mgr", command=self.open_mod_manager, bg=LILAC, fg="white", font=("Arial", 8, "bold")).pack(side=tk.RIGHT, padx=2)
+        tk.Button(top_bar, text="Save", command=self.save_mod_file, bg="#ddffdd", font=("Arial", 8)).pack(side=tk.RIGHT, padx=2)
+        tk.Button(top_bar, text="PNACH", command=self.generate_pnach, bg="#8A2BE2", fg="white", font=("Arial", 8, "bold")).pack(side=tk.RIGHT, padx=2)
+        tk.Button(top_bar, text="Predict", command=self.calculate_likely_outcome, bg=GOLD_BTN, fg="black", font=("Arial", 8, "bold")).pack(side=tk.RIGHT, padx=2)
+        tk.Button(top_bar, text="Gen Stage", command=self.generate_procedural_stage, bg=ORANGE_BTN, fg="black", font=("Arial", 8, "bold")).pack(side=tk.RIGHT, padx=2)
+        tk.Button(top_bar, text="Rnd Stats", command=self.open_stat_randomizer, bg="#FF69B4", fg="black", font=("Arial", 8, "bold")).pack(side=tk.RIGHT, padx=2)
+        tk.Button(top_bar, text="Balance", command=self.run_auto_balance, bg=CYAN_BTN, fg="black", font=("Arial", 8, "bold")).pack(side=tk.RIGHT, padx=2)
         
         # Canvas Container
         canvas_container = tk.Frame(left_frame, bd=2, relief=tk.SUNKEN)
@@ -1075,8 +1060,7 @@ class DW2CoordinateGuider:
         vbar = tk.Scrollbar(canvas_container, orient=tk.VERTICAL)
         hbar = tk.Scrollbar(canvas_container, orient=tk.HORIZONTAL)
         
-        self.canvas = tk.Canvas(canvas_container, bg="#333333", 
-                                xscrollcommand=hbar.set, yscrollcommand=vbar.set)
+        self.canvas = tk.Canvas(canvas_container, bg="#333333", xscrollcommand=hbar.set, yscrollcommand=vbar.set)
         
         vbar.config(command=self.canvas.yview)
         hbar.config(command=self.canvas.xview)
@@ -1085,7 +1069,7 @@ class DW2CoordinateGuider:
         hbar.pack(side=tk.BOTTOM, fill=tk.X)
         self.canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         
-        # bindings
+        # Bindings
         self.canvas.bind("<ButtonPress-1>", self.on_left_press)
         self.canvas.bind("<B1-Motion>", self.on_left_drag)
         self.canvas.bind("<ButtonRelease-1>", self.on_left_release)
@@ -1094,21 +1078,32 @@ class DW2CoordinateGuider:
         self.canvas.bind("<ButtonPress-3>", self.start_pan) 
         self.canvas.bind("<B3-Motion>", self.do_pan)
 
-        # right panel
-        
-        # Squad Editor
-        edit_frame = tk.LabelFrame(right_frame, text="Squad Editor")
-        edit_frame.pack(fill=tk.X, pady=5)
-        
-        # Global Morale Bar Area
-        # A small canvas to draw the Blue vs Red balance
-        self.morale_canvas = tk.Canvas(edit_frame, width=300, height=30, bg="#333333", highlightthickness=0)
-        self.morale_canvas.grid(row=0, column=0, columnspan=4, pady=(5, 10))
-        
-        self.lbl_selected = tk.Label(edit_frame, text="No Selection", fg="gray", font=("Arial", 10, "bold"))
-        self.lbl_selected.grid(row=1, column=0, columnspan=4, pady=5)
+        # right panel, the tabs
+        right_frame = tk.Frame(main_paned)
+        # Min width 460 ensures the 2 column input grid fits comfortably
+        main_paned.add(right_frame, minsize=460, stretch="never")
 
-        # Define Tooltip Dictionary
+        # Common Info Header (Always Visible)
+        header_frame = tk.Frame(right_frame, relief=tk.RIDGE, bd=2)
+        header_frame.pack(fill=tk.X, padx=5, pady=5)
+
+        # Global Morale Bar
+        self.morale_canvas = tk.Canvas(header_frame, width=300, height=25, bg="#333333", highlightthickness=0)
+        self.morale_canvas.pack(pady=5)
+        
+        # Selection Label
+        self.lbl_selected = tk.Label(header_frame, text="No Selection", fg="gray", font=("Arial", 11, "bold"))
+        self.lbl_selected.pack(pady=2)
+
+        # Notebook (Tabs)
+        self.notebook = ttk.Notebook(right_frame)
+        self.notebook.pack(fill=tk.BOTH, expand=True, padx=5, pady=2)
+
+        # Tab 1, squad editor
+        tab_editor = tk.Frame(self.notebook)
+        self.notebook.add(tab_editor, text="  Edit Squad  ")
+
+        # Tooltip Dictionary
         TOOLTIPS = {
             "x": "Horizontal coordinate on the map (0-800)",
             "y": "Vertical coordinate on the map (0-800)",
@@ -1133,97 +1128,105 @@ class DW2CoordinateGuider:
             "points": "Points awarded to player for KO of this squad."
         }
 
-        row = 2
+        # Grid of Inputs
+        grid_frame = tk.Frame(tab_editor)
+        grid_frame.pack(fill=tk.X, padx=5, pady=10)
+
+        row = 0
         col = 0
         for label_text, key, _, _ in UNIT_DATA_FIELDS:
-            # Create Label
-            lbl = tk.Label(edit_frame, text=label_text + ":")
-            lbl.grid(row=row, column=col*2, sticky="e", padx=2, pady=2)
+            lbl = tk.Label(grid_frame, text=label_text + ":")
+            lbl.grid(row=row, column=col*2, sticky="e", padx=5, pady=4)
             
-            # Attach Tooltip if one exists for this key
             if key in TOOLTIPS:
                 ToolTip(lbl, TOOLTIPS[key])
 
             var = tk.StringVar()
             self.entry_vars[key] = var
-            entry = tk.Entry(edit_frame, textvariable=var, width=22)
-            entry.grid(row=row, column=col*2+1, sticky="w", padx=2, pady=2)
+            # Wider entries since we have space now
+            entry = tk.Entry(grid_frame, textvariable=var, width=20) 
+            entry.grid(row=row, column=col*2+1, sticky="w", padx=5, pady=4)
             
             col += 1
             if col > 1:
                 col = 0
                 row += 1
 
-       # Morale Field
-        # Create Label as a variable so we can attach a tooltip
-        lbl_morale = tk.Label(edit_frame, text="Morale:")
-        lbl_morale.grid(row=row, column=0, sticky="e", padx=2, pady=2)
-        ToolTip(lbl_morale, "Force Morale (0-899). Only editable for Force Leaders. \n Morale affects how well the squads fight offscreen \n when the player isn't around.")
+        # Morale Field
+        lbl_morale = tk.Label(grid_frame, text="Morale:")
+        lbl_morale.grid(row=row, column=0, sticky="e", padx=5, pady=4)
+        ToolTip(lbl_morale, "Force Morale (0-899). Leaders only.")
 
-        # Create Entry
         self.var_morale = tk.StringVar()
-        self.entry_morale = tk.Entry(edit_frame, textvariable=self.var_morale, width=22)
-        self.entry_morale.grid(row=row, column=1, sticky="w", padx=2, pady=2)
+        self.entry_morale = tk.Entry(grid_frame, textvariable=self.var_morale, width=20)
+        self.entry_morale.grid(row=row, column=1, sticky="w", padx=5, pady=4)
 
-        btn_frame = tk.Frame(edit_frame)
-        btn_frame.grid(row=row+1, column=0, columnspan=4, pady=10)
+        # Action Buttons (Update/Delete)
+        action_frame = tk.Frame(tab_editor)
+        action_frame.pack(fill=tk.X, pady=20)
         
-        tk.Button(btn_frame, text="Update Squad Data", command=self.update_selected_unit_data, bg="#ccffcc", width=20).pack(side=tk.LEFT, padx=5)
-        tk.Button(btn_frame, text="Delete Squad", command=self.delete_selected_unit, bg="#ffdddd").pack(side=tk.LEFT, padx=5)
+        tk.Button(action_frame, text="Update Data", command=self.update_selected_unit_data, bg="#ccffcc", height=2).pack(side=tk.LEFT, fill=tk.X, expand=True, padx=5)
+        tk.Button(action_frame, text="Delete Unit", command=self.delete_selected_unit, bg="#ffdddd", height=2).pack(side=tk.LEFT, fill=tk.X, expand=True, padx=5)
 
-        # Master Unit ID Reference (Searchable)
-        tk.Label(btn_frame, text="ID Lookup:", font=("Arial", 9)).pack(side=tk.LEFT, padx=(15, 2))
+        # Tab 2, roster/list
+        tab_list = tk.Frame(self.notebook)
+        self.notebook.add(tab_list, text="  Unit List and Add  ")
+
+        # Add Unit Area
+        add_frame = tk.LabelFrame(tab_list, text="Add New Unit")
+        add_frame.pack(fill=tk.X, pady=10, padx=5)
         
-        # Generate List
-        sorted_all_units = sorted(UNIT_NAMES.items(), key=lambda x: x[0])
-        # Store in self so the filter function can access the full list later
-        self.all_unit_values = [f"{name} ({uid})" for uid, name in sorted_all_units]
-        
-        cb_unit_ref = ttk.Combobox(btn_frame, values=self.all_unit_values, state="normal", width=35)
-        cb_unit_ref.set("Type to Filter")
-        cb_unit_ref.pack(side=tk.LEFT, padx=2)
-        
-        # Bind the KeyRelease event to the filter function
-        cb_unit_ref.bind('<KeyRelease>', self._on_combo_keyrelease)
-        
-        add_frame = tk.LabelFrame(right_frame, text="Add New Unit")
-        add_frame.pack(fill=tk.X, pady=10)
         self.lbl_cap_s1 = tk.Label(add_frame, text="Side 1 (Blue): 0/256", fg="blue")
         self.lbl_cap_s1.pack(anchor="w", padx=5)
         self.lbl_cap_s2 = tk.Label(add_frame, text="Side 2 (Red): 0/256", fg="red")
         self.lbl_cap_s2.pack(anchor="w", padx=5)
         
         btn_add_frame = tk.Frame(add_frame)
-        btn_add_frame.pack(fill=tk.X)
+        btn_add_frame.pack(fill=tk.X, pady=5)
         tk.Button(btn_add_frame, text="Add to Side 1", command=lambda: self.add_unit(1)).pack(side=tk.LEFT, fill=tk.X, expand=True, padx=2)
         tk.Button(btn_add_frame, text="Add to Side 2", command=lambda: self.add_unit(2)).pack(side=tk.LEFT, fill=tk.X, expand=True, padx=2)
 
-        # Unit List
-        list_frame = tk.LabelFrame(right_frame, text="Unit List (Multi-Select)")
-        list_frame.pack(fill=tk.BOTH, expand=True, pady=5)
+        # List Area
+        list_container = tk.Frame(tab_list)
+        list_container.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
         
-        search_frame = tk.Frame(list_frame)
-        search_frame.pack(fill=tk.X)
-        tk.Label(search_frame, text="Filter:").pack(side=tk.LEFT)
+        # Filter
+        filter_frame = tk.Frame(list_container)
+        filter_frame.pack(fill=tk.X)
+        tk.Label(filter_frame, text="Search:").pack(side=tk.LEFT)
         self.var_search = tk.StringVar()
         self.var_search.trace("w", self.filter_list)
-        tk.Entry(search_frame, textvariable=self.var_search).pack(side=tk.LEFT, fill=tk.X, expand=True)
+        tk.Entry(filter_frame, textvariable=self.var_search).pack(side=tk.LEFT, fill=tk.X, expand=True)
 
-        # Listbox now extended mode
-        self.listbox = tk.Listbox(list_frame, exportselection=False, width=40, selectmode=tk.EXTENDED)
+        # Listbox
+        self.listbox = tk.Listbox(list_container, exportselection=False, selectmode=tk.EXTENDED)
         self.listbox.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-        sb = tk.Scrollbar(list_frame, command=self.listbox.yview)
+        sb = tk.Scrollbar(list_container, command=self.listbox.yview)
         sb.pack(side=tk.RIGHT, fill=tk.Y)
         self.listbox.config(yscrollcommand=sb.set)
         self.listbox.bind("<<ListboxSelect>>", self.on_listbox_select)
+
+        # Lookup ComboBox (Moved to List Tab for space)
+        lookup_frame = tk.Frame(tab_list)
+        lookup_frame.pack(fill=tk.X, padx=5, pady=10)
+        tk.Label(lookup_frame, text="ID Lookup Reference:", font=("Arial", 9, "bold")).pack(anchor="w")
         
-        # Zoom Controls
+        sorted_all_units = sorted(UNIT_NAMES.items(), key=lambda x: x[0])
+        self.all_unit_values = [f"{name} ({uid})" for uid, name in sorted_all_units]
+        
+        cb_unit_ref = ttk.Combobox(lookup_frame, values=self.all_unit_values, state="normal")
+        cb_unit_ref.set("Type name to find ID")
+        cb_unit_ref.pack(fill=tk.X, pady=2)
+        cb_unit_ref.bind('<KeyRelease>', self._on_combo_keyrelease)
+
+
+        # Zoom Controls (Bottom of Right Panel, always visible)
         zoom_frame = tk.Frame(right_frame)
-        zoom_frame.pack(side=tk.BOTTOM, fill=tk.X)
-        tk.Button(zoom_frame, text="-", width=3, command=self.zoom_out).pack(side=tk.LEFT)
-        tk.Button(zoom_frame, text="+", width=3, command=self.zoom_in).pack(side=tk.LEFT)
-        self.lbl_zoom = tk.Label(zoom_frame, text="100%")
-        self.lbl_zoom.pack(side=tk.LEFT, padx=5)
+        zoom_frame.pack(side=tk.BOTTOM, fill=tk.X, pady=10)
+        tk.Button(zoom_frame, text="- Zoom", width=8, command=self.zoom_out).pack(side=tk.LEFT, padx=10)
+        tk.Button(zoom_frame, text="+ Zoom", width=8, command=self.zoom_in).pack(side=tk.LEFT)
+        self.lbl_zoom = tk.Label(zoom_frame, text="100%", font=("Arial", 10))
+        self.lbl_zoom.pack(side=tk.LEFT, padx=10)
 
     def _on_combo_keyrelease(self, event):
         # Get the widget that triggered the event
@@ -2270,7 +2273,14 @@ class DW2CoordinateGuider:
         elif count == 1:
             idx = list(self.selected_indices)[0]
             name = get_unit_name(self.slots[idx]["leader"])
-            self.lbl_selected.config(text=f"Slot {idx} | {name}", fg="black")
+            
+            # VISUAL FIX: Show Relative Index
+            is_s2 = idx >= 256
+            display_idx = (idx - 256) if is_s2 else idx
+            side_lbl = "Side 2" if is_s2 else "Side 1"
+            
+            # Header now says: "Slot 5 (Side 2) | Name"
+            self.lbl_selected.config(text=f"Slot {display_idx} ({side_lbl}) | {name}", fg="black")
         else:
             self.lbl_selected.config(text=f"Squad Selection: {count} Units", fg="purple")
 
@@ -2297,7 +2307,6 @@ class DW2CoordinateGuider:
             if is_mixed:
                 self.entry_vars[key].set("<Mixed>")
             else:
-                # Format string: "Name: Value"
                 final_str = str(ref_val)
                 if key in lookup_map:
                     for name, val in lookup_map[key]:
@@ -2306,21 +2315,18 @@ class DW2CoordinateGuider:
                             break
                 self.entry_vars[key].set(final_str)
                 
-        # Morale Field Logic (Chain of Command)
+        # Morale Field Logic
         idx = list(self.selected_indices)[0]
         s = self.slots[idx]
         serves = s["own_slot"]
         
-        # Calculate target_self to see if I am editable
         target_self = idx if idx < 256 else (idx - 256)
         
         if serves == target_self:
-            # I am the Force Leader -> Editable
             current_morale = s.get("morale", 0)
             self.entry_morale.config(state="normal")
             self.var_morale.set(str(current_morale))
         else:
-            # I serve someone else -> Read-Only look at top Commander
             eff_morale = self._get_commander_morale(idx)
             self.var_morale.set(f"{eff_morale} (Linked)")
             self.entry_morale.config(state="disabled")
@@ -2430,15 +2436,21 @@ class DW2CoordinateGuider:
         for i, slot in enumerate(self.slots):
             if slot["leader"] == 255 or (slot["x"] == 0 and slot["y"] == 0):
                 continue
-                
-            side = "S1" if i < 256 else "S2"
+            
+            # VISUAL FIX: Calculate Relative Index for Display Only
+            is_s2 = i >= 256
+            side_str = "S2" if is_s2 else "S1"
+            display_idx = (i - 256) if is_s2 else i
+            
             name = get_unit_name(slot["leader"])
-            display_text = f"[{side} | {i}] {name} ({slot['x']}, {slot['y']})"
+            
+            # Now shows [S2 | 5] instead of [S2 | 261]
+            display_text = f"[{side_str} | {display_idx}] {name} ({slot['x']}, {slot['y']})"
             
             if filter_txt and filter_txt not in display_text.lower(): continue
             
             self.listbox.insert(tk.END, display_text)
-            self.list_map.append(i)
+            self.list_map.append(i) # We still store the ABSOLUTE index (i) for logic
             
             if i in self.selected_indices:
                 indices_to_select.append(row_idx)
