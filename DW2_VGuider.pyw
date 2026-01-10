@@ -1121,7 +1121,7 @@ class DW2CoordinateGuider:
             "atk": "Attack of the squad leader, guards get 33.3% less of it.",
             "def": "Defense of the squad leader, guards get 33.3% less of it.",
             "guard_cnt": "Number of bodyguards (Total unit size including leader), max value DW2 supports is 9.",
-            "own_slot": "Determines who the squad serves, \n if the value is the same as the slot number \n then the squad becomes its own force. \n DW2 has issues if there are more than 22 forces on a stage.",
+            "own_slot": "Determines who the squad serves, \n if the value is the same as the slot number \n then the squad becomes its own force. \n DW2 has issues if there are more than 22 forces \n on a stage. Side 2 uses the same slot values as side 1 \n, meaning slots 0-11.",
             "type": "Unit Class (0=Player, 1=Commander, 2=General, 3=Playable Officer, \n 4=NPC Officer, 5= Gate Captain/Guards/Troops that don't respawn, 6=Troops which do respawn).",
             "ai_type": "This determines the type of unit the squad is, 2 specifies \n they're ranged units while 4 has the squad squad \n spawn on a horse.",
             "orders": "This determines the orders of the squad. 1 = attack enemy slot, 3 = follow ally slot, \n 4 = hold position. There are other types but not all are documented.",
@@ -1670,7 +1670,7 @@ class DW2CoordinateGuider:
             "guard_cnt": 5 if is_commander else 0, # Visuals use Count-1
             "ai_lvl": 8 if is_commander else 2,
             "dir": random.randint(0, 7),
-            "own_slot": slot_idx
+            "own_slot": 0 # Forces everyone to serve the Side Leader (Slot 0 or 256)
         })
 
     # File I/O
