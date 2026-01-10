@@ -1,6 +1,6 @@
 # Dynasty Warriors 2 Visual Guider Info
 
-Dynasty Warriors 2 Visual Guider is a High End GUI Standalone Stage Data modding tool that simplifies modding Stage Data by providing a visual experience for modding. It comes with full modding support of all stages in DW2, the coordinate guider system is built into it and redesigned, a high end mod manager (explained in Features of Visual Guider For Stage Modding), Genetic Algorithm support which i'll cover in Genetic Algorithm Info, Auto pnach generation (review Generate Pnach Section), and many more features. Check Upcoming Features Section for planned features.
+Dynasty Warriors 2 Visual Guider is a High End GUI Standalone Stage Data modding tool that simplifies modding Stage Data by providing a visual experience for modding. It comes with full modding support of all stages in DW2, the coordinate guider system is built into it and redesigned, a high end mod manager (explained in Features of Visual Guider For Stage Modding), Genetic Algorithm support which i'll cover in Genetic Algorithm Info, Auto pnach generation (review Generate Pnach Section), and many more features. Check Current Version Section for latest details.
 
 # Requirements To Use Visual Guider
 
@@ -8,9 +8,13 @@ Python 3 as well as Pillow. Pillow is an imaging library. To install pillow, ope
 
 The US version of Dynasty Warriors 2.
 
+If you update to a new version of Visual Guider, delete your backups folder that Visual Guider creates for stages before running the new version and make sure any file mods you have enabled are disabled because Version 1.4 of Visual Guider changes backup/mod creation by expanding the mod file format to include master list data.
+
 # Credits
 
-Credit goes to Michael, Passion Wagon, Aurvi, and The Tempest for documentation with Stage/Morale Data. I only take credit for the code and design of Visual Guider. Michael, Passion Wagon, Aurvi, and The Tempest have helped a lot with understanding Stage Data.
+Credit goes to Michael, Passion Wagon, Aurvi, and The Tempest for documentation with Stage/Morale Data. Credit also goes to Michael for documentation on model, motion/moveset, and color values. Michael gave permission for me to include his lists of documentation in Visual Guider so credit goes to him for the model, motion/moveset, and army color values/strings.
+
+I only take credit for the code and design of Visual Guider. Michael, Passion Wagon, Aurvi, and The Tempest have helped a lot with understanding Stage Data.
 
 # Quick Guide Usage
 
@@ -60,7 +64,7 @@ Visual Guider also comes with a Mod Creator/Mod Manager as part of it to make it
 
 There are Genetic Algorithm features as part of Visual Guider which I cover in Genetic Algorithm Info.
 
-# Screenshots of Visual Guider
+# Screenshots of Visual Guider (version 1.1, current version is 1.4 which includes a new design for the GUI)
 <img width="1833" height="934" alt="s1" src="https://github.com/user-attachments/assets/c1eae034-b8a5-4c17-8941-2d37e6873e17" />
 <img width="1837" height="929" alt="s2" src="https://github.com/user-attachments/assets/d37ec1d3-bc54-4917-9297-f215e570cf66" />
 <img width="1840" height="929" alt="s3" src="https://github.com/user-attachments/assets/fff692fe-dd08-4543-a99f-0331aee3cf36" />
@@ -96,8 +100,8 @@ Mod Manager is only for file mods, it's not used for pnach handling. It automati
 
 I decided to make Visual Guider a single file instead of a package release (having multiple python files within a folder for those who aren't aware), i'm not changing that. The code is clean and well organized.
 
-# Upcoming Features Section
+# Current Version Section
 
-Master list modding (affects what models and movesets are allowed for each stage)
+Master list modding (affects what models, movesets, army colors are allowed for each stage) is now implemented. I suggest joining the musou warriors discord server for any questions regarding this.
 
 <img width="1271" height="785" alt="z7" src="https://github.com/user-attachments/assets/164fdfd0-d15a-4092-9c8a-c7ba5d2d5950" />=
