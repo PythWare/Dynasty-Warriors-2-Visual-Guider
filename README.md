@@ -28,7 +28,7 @@ To mod Morale, you must mod the force leader (unless doing Multi-Select which af
 
 # Using Auto-Balance and Generate Stage
 
-The GA will generate the new squads but they're placeholder squads, make sure you mod the squads with the values you desire whether individually or all at once with Multi-Select.
+The GA will generate the new squads/stage but they're placeholder squads, make sure you mod the squads with the values you desire in Squad Editor whether individually or all at once with Multi-Select. You must mod the data of squads generated in squad editor, the stage generation is a starter kit but you still need to mod the squad values once they're generated.
 
 # Features of Visual Guider For Stage Modding
 
