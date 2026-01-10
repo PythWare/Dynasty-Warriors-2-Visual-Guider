@@ -282,6 +282,78 @@ STAGES_ZONES = {
     }
 }
 
+# RAM Addresses for PNACH Generation (US Version)
+# Order matches STAGE_NAMES
+MASTER_RAM_MAP = [
+    # Yellow Turban
+    {"mov": 0x203582B0, "mod": 0x20358510, "col": 0x20358830},
+    # Hu Lao Gate
+    {"mov": 0x203582FC, "mod": 0x2035856C, "col": 0x20358835},
+    # Guan Du
+    {"mov": 0x20358348, "mod": 0x203585C8, "col": 0x2035883A},
+    # Chang Ban
+    {"mov": 0x20358394, "mod": 0x20358624, "col": 0x2035883F},
+    # Chi Bi
+    {"mov": 0x203583E0, "mod": 0x20358680, "col": 0x20358844},
+    # He Fei
+    {"mov": 0x2035842C, "mod": 0x203586DC, "col": 0x20358849},
+    # Yi Ling
+    {"mov": 0x20358478, "mod": 0x20358738, "col": 0x2035884E},
+    # Wu Zhang Plains
+    {"mov": 0x203584C4, "mod": 0x20358794, "col": 0x20358853}
+]
+
+# Format: Stage Name: { Type (1=Moveset, 2=Model, 3=Color): (File_Offset, Count_of_Chunks) }
+# Model/Moveset = 4 Bytes, Color = 1 Byte
+MASTER_OFFSETS = {
+    "Yellow Turban Rebellion": {1: (0x160BC178, 12), 2: (0x160BC3D8, 18), 3: (0x160BC828, 5)},
+    "Hu Lao Gate":             {1: (0x160BC1C4, 14), 2: (0x160BC434, 20), 3: (0x160BC82D, 5)},
+    "Guan Du":                 {1: (0x160BC210, 14), 2: (0x160BC490, 18), 3: (0x160BC832, 5)},
+    "Chang Ban":               {1: (0x160BC25C, 16), 2: (0x160BC4EC, 19), 3: (0x160BC837, 5)},
+    "Chi Bi":                  {1: (0x160BC2A8, 16), 2: (0x160BC548, 21), 3: (0x160BC83C, 5)},
+    "He Fei":                  {1: (0x160BC2F4, 15), 2: (0x160BC5A4, 22), 3: (0x160BC841, 5)},
+    "Yi Ling":                 {1: (0x160BC340, 18), 2: (0x160BC600, 22), 3: (0x160BC845, 5)},
+    "Wu Zhang Plains":         {1: (0x160BC38C, 17), 2: (0x160BC65C, 22), 3: (0x160BC84B, 5)}
+}
+
+# Master List reference Data with integer values
+
+MASTER_MODELS = {
+    0: "Zhao Yun", 1: "Guan Yu", 2: "Zhang Fei", 3: "Xiahou Dun", 4: "Dian Wei",
+    5: "Xu Zhu", 6: "Zhou Yu", 7: "Lu Xun", 8: "Taishi Ci", 9: "Diao Chan",
+    10: "Zhuge Liang", 11: "Cao Cao", 12: "Lu Bu", 13: "Sun Shang Xiang", 14: "Liu Bei",
+    15: "Sun Jian", 16: "Sun Quan", 17: "Dong Zhuo", 18: "Yuan Shao", 19: "Ma Chao",
+    20: "Huang Zhong", 21: "Xiahou Yuan", 22: "Zhang Liao", 23: "Sima Yi", 24: "Lu Meng",
+    25: "Gan Ning", 26: "Jiang Wei", 27: "Zhang Jiao", 28: "Private", 29: "Major",
+    30: "Lady", 31: "Sergeant", 32: "Bowman", 33: "First Bow", 34: "YT Trooper",
+    35: "YT Captain", 36: "NPC Officer cape", 37: "NPC Officer armor", 38: "Strategist"
+}
+
+MASTER_MOVESETS = {
+    0: "Zhao Yun", 1: "Guan Yu", 2: "Zhang Fei", 3: "Xiahou Dun", 4: "Dian Wei",
+    5: "Xu Zhu", 6: "Zhou Yu", 7: "Lu Xun", 8: "Taishi Ci", 9: "Diao Chan",
+    10: "Zhuge Liang", 11: "Cao Cao", 12: "Lu Bu", 13: "Sun Shang Xiang",
+    14: "Bow", 15: "Crossbow", 16: "Private Sword", 17: "Sword", 18: "Ruler/Strat Sword",
+    19: "Lady Guard", 20: "Private Spear", 21: "Spear (Jiang Wei)", 22: "Private Pike",
+    23: "Pike (Lu Meng)"
+}
+
+MASTER_COLORS = {
+    0: "Blue",
+    1: "Red",
+    2: "Green",
+    3: "Purple",
+    4: "Yellow"
+}
+
+# Helper to generate formatted lists for the Comboboxes
+def _gen_combo_list(data_dict):
+    return [f"{name} ({uid})" for uid, name in sorted(data_dict.items())]
+
+MODEL_COMBO_LIST = _gen_combo_list(MASTER_MODELS)
+MOVESET_COMBO_LIST = _gen_combo_list(MASTER_MOVESETS)
+COLOR_COMBO_LIST = _gen_combo_list(MASTER_COLORS)
+
 # Offsets in bin file where stage data is held, each stage has 8 offsets due to sector data
 STAGE_OFFSETS = [
     [0x24DD6DD8, 0x24DD7708, 0x24DD8038, 0x24DD8968, 0x24DD9298, 0x24DD9BC8, 0x24DDA4F8, 0x24DDAE28], 
@@ -418,10 +490,12 @@ class ToolTip(object):
 # Stage Mod Creator
 
 class StageModCreator(tk.Toplevel):
-    def __init__(self, parent, slots, stage_idx):
+    def __init__(self, parent, slots, stage_idx, master_data):
         super().__init__(parent)
         self.slots = slots
         self.stage_idx = stage_idx
+        self.master_data = master_data # Store master list data
+        
         self.title("Stage Mod Creator")
         self.geometry("600x550")
         self.configure(bg=LILAC)
@@ -465,57 +539,62 @@ class StageModCreator(tk.Toplevel):
     def select_images(self):
         paths = filedialog.askopenfilenames(
             title="Select Preview Images",
-            filetypes=[("Images", "*.png *.jpg *.gif")]
+            filetypes=[("Images", "*.png;*.jpg;*.jpeg")]
         )
         if paths:
-            self.image_paths = list(paths[:3])
+            self.image_paths = list(paths)[:3]
             self.lbl_images.config(text=f"{len(self.image_paths)} images selected")
 
     def create_mod(self):
+        # Get Name and Auto-Detect Path
         name = self.var_name.get().strip()
         if not name:
             messagebox.showerror("Error", "Mod Name is required.")
             return
 
-        ext = STAGE_EXTENSIONS[self.stage_idx]
-        filename = os.path.join(DW2_MODS_DIR, name + ext)
-        
         if not os.path.exists(DW2_MODS_DIR):
             os.makedirs(DW2_MODS_DIR)
 
+        ext = STAGE_EXTENSIONS[self.stage_idx]
+        filename = os.path.join(DW2_MODS_DIR, name + ext)
+
         try:
             with open(filename, "wb") as f:
-                # Write 512 slots
+                # Payload generation from memory
+                
+                # Write the 512 Slots (Reconstructed from Editor State)
                 for slot in self.slots:
-                    b = bytearray(slot["raw"]) # base 32 bytes
+                    b = bytearray(slot["raw"]) # Start with original bytes
+                    
+                    # Overwrite with current edited values
                     for _, key, offset, size in UNIT_DATA_FIELDS:
                         val = slot[key]
-                        max_val = (2**(8*size)) - 1
+                        max_val = (1 << (8 * size)) - 1
                         val = max(0, min(val, max_val))
                         b[offset:offset+size] = val.to_bytes(size, "little")
+                    
                     f.write(b)
                 
-                # Write Offsets
-                for off in STAGE_OFFSETS[self.stage_idx]:
+                # Write the Offsets
+                current_offsets = STAGE_OFFSETS[self.stage_idx]
+                for off in current_offsets:
                     f.write(off.to_bytes(4, "little"))
 
-                # append metadata
+                # Metadata, includes Master List/Morale
                 self._write_metadata(f)
             
-            messagebox.showinfo("Success", f"Mod created successfully in {DW2_MODS_DIR}!")
+            messagebox.showinfo("Success", f"Mod created successfully in:\n{filename}")
             self.destroy()
-
+            
         except Exception as e:
             messagebox.showerror("Error", f"Failed to create mod:\n{e}")
 
     def _write_metadata(self, f):
-        # Metadata Header
+        # Header and Strings
         f.write(b"DW2MOD")
-        
-        # Write Stage ID (1 byte)
         f.write(self.stage_idx.to_bytes(1, "little"))
-
-        # Helper to write string with 2 byte length
+        
+        # Helper for strings
         def write_str(s):
             b_s = s.encode("utf-8")
             f.write(len(b_s).to_bytes(2, "little"))
@@ -530,36 +609,61 @@ class StageModCreator(tk.Toplevel):
         for p in self.image_paths:
             try:
                 with open(p, "rb") as img_f:
-                    data = img_f.read()
-                    f.write(len(data).to_bytes(4, "little"))
-                    f.write(data)
+                    img_data = img_f.read()
+                    f.write(len(img_data).to_bytes(4, "little"))
+                    f.write(img_data)
             except:
-                f.write((0).to_bytes(4, "little")) # Failed image
+                f.write((0).to_bytes(4, "little"))
 
-        # Write Morale Data (Split Payload)
+        # Morale Data
         stg_name = STAGE_NAMES[self.stage_idx]
         if stg_name in STAGE_MORALE_DATA:
-            f.write(b"MORALE") # Marker
-            
+            f.write(b"MORALE")
             for side_id in [1, 2]:
-                # Reconstruct the list of morale values from the slots
-                morale_values = []
-                start_slot = 0 if side_id == 1 else 256
-                end_slot = 256 if side_id == 1 else 512
+                m_off, m_count = STAGE_MORALE_DATA[stg_name][side_id]
                 
-                for i in range(start_slot, end_slot):
-                    # Check if this slot is a Force Leader
-                    target_val = i if side_id == 1 else (i - 256)
-                    if self.slots[i]["own_slot"] == target_val and self.slots[i]["leader"] != 255:
-                        m_val = self.slots[i].get("morale", 0)
-                        morale_values.append(m_val)
+                if side_id == 1:
+                    vals = [self.slots[i].get("morale", 0) for i in range(256) 
+                            if self.slots[i]["leader"] != 255 and self.slots[i]["own_slot"] == i]
+                else:
+                    vals = [self.slots[i].get("morale", 0) for i in range(256, 512) 
+                            if self.slots[i]["leader"] != 255 and self.slots[i]["own_slot"] == (i - 256)]
                 
-                # Write Count (2 bytes) + Values (2 bytes each)
-                f.write(len(morale_values).to_bytes(2, "little"))
-                for val in morale_values:
-                    f.write(val.to_bytes(2, "little"))
+                if len(vals) < m_count: vals.extend([0] * (m_count - len(vals)))
+                vals = vals[:m_count]
+                
+                f.write(m_count.to_bytes(2, "little"))
+                for v in vals:
+                    f.write(v.to_bytes(2, "little"))
         else:
-            f.write(b"NOMORALE") # Marker for no data
+            # Use 6 bytes to maintain alignment
+            f.write(b"NOMORL") 
+
+        # Master List Data
+        if stg_name in MASTER_OFFSETS:
+            f.write(b"MASTER")
+            
+            offsets_map = MASTER_OFFSETS[stg_name]
+            types = [(1, "moveset", 4), (2, "model", 4), (3, "color", 1)]
+            
+            for type_id, prefix, size in types:
+                if type_id in offsets_map:
+                    _, count = offsets_map[type_id]
+                    
+                    # Write Header
+                    total_bytes = count * size
+                    f.write(type_id.to_bytes(1, "little"))
+                    f.write(total_bytes.to_bytes(4, "little"))
+                    
+                    for i in range(count):
+                        key = f"{prefix}_{i}"
+                        val = self.master_data.get(key, 0)
+                        
+                        # Clamp and Safety Check
+                        max_val = (1 << (8 * size)) - 1
+                        val = max(0, min(val, max_val))
+                        
+                        f.write(val.to_bytes(size, "little"))
 
 # Mod Manager
 
@@ -587,7 +691,6 @@ class HighEndModManager(tk.Toplevel):
         self._scan_mods()
 
     def _ensure_all_backups(self):
-        """Checks if backups exist, if not creates them (Stage Data + Morale)"""
         if not os.path.exists(BACKUP_DIR):
             os.makedirs(BACKUP_DIR)
             
@@ -603,28 +706,40 @@ class HighEndModManager(tk.Toplevel):
                 with open(self.bin_path, "rb") as f_bin:
                     for idx, bk_path in missing_backups:
                         with open(bk_path, "wb") as f_bk:
-                            # Backup Stage Data (Standard)
+                            # Stage Data
                             target_offsets = STAGE_OFFSETS[idx]
                             for off in target_offsets:
                                 f_bin.seek(off)
                                 f_bk.write(f_bin.read(64*32))
-                            # Write offsets
                             for off in target_offsets:
                                 f_bk.write(off.to_bytes(4, "little"))
                                 
-                            # Backup Morale Data (New)
+                            # Morale Data
                             stg_name = STAGE_NAMES[idx]
                             if stg_name in STAGE_MORALE_DATA:
                                 f_bk.write(b"MORALE")
                                 for side_id in [1, 2]:
                                     m_off, m_count = STAGE_MORALE_DATA[stg_name][side_id]
+                                    f_bk.write(m_count.to_bytes(2, "little")) 
                                     f_bin.seek(m_off)
-                                    data = f_bin.read(m_count * 2)
-                                    f_bk.write(data)
+                                    f_bk.write(f_bin.read(m_count * 2))
                             else:
-                                f_bk.write(b"NOMORALE")
+                                f_bk.write(b"NOMORL") # 6 Bytes
+                                
+                            # Master List Data
+                            if stg_name in MASTER_OFFSETS:
+                                f_bk.write(b"MASTER")
+                                types = [(1, 4), (2, 4), (3, 1)]
+                                for type_id, size in types:
+                                    if type_id in MASTER_OFFSETS[stg_name]:
+                                        off, count = MASTER_OFFSETS[stg_name][type_id]
+                                        data_len = count * size
+                                        f_bk.write(type_id.to_bytes(1, "little"))
+                                        f_bk.write(data_len.to_bytes(4, "little"))
+                                        f_bin.seek(off)
+                                        f_bk.write(f_bin.read(data_len))
 
-                messagebox.showinfo("Backup", f"Automatically created {len(missing_backups)} missing backups.")
+                messagebox.showinfo("Backup", f"Created {len(missing_backups)} missing backups.")
             except Exception as e:
                 messagebox.showerror("Backup Error", f"Failed to auto-create backups:\n{e}")
 
@@ -844,29 +959,23 @@ class HighEndModManager(tk.Toplevel):
         mod = next((m for m in self.mod_list if m["path"] == path), None)
         
         stage_id = mod["stage_id"]
-        if stage_id is None:
-            messagebox.showerror("Error", "Could not identify target stage.")
-            return
+        if stage_id is None: return
 
-        # Collision detection
         sid_str = str(stage_id)
         current_active = self.mod_state.get(sid_str)
-        
         if current_active and current_active != mod["filename"]:
             messagebox.showwarning("Collision", f"Please disable '{current_active}' first.")
             return
-        
         if current_active == mod["filename"]:
             messagebox.showinfo("Info", "Mod already enabled.")
             return
 
-        # Apply Mod
         try:
             PAYLOAD_SIZE = 16416
             target_offsets = STAGE_OFFSETS[stage_id]
 
             with open(path, "rb") as f_mod, open(self.bin_path, "r+b") as f_bin:
-                # Write Stage Data
+                # Main Stage Data
                 payload = f_mod.read(PAYLOAD_SIZE)
                 chunk_size = 64 * 32
                 for i, target_off in enumerate(target_offsets):
@@ -874,41 +983,56 @@ class HighEndModManager(tk.Toplevel):
                     f_bin.seek(target_off)
                     f_bin.write(chunk_data)
                 
-                # Parse Metadata to find Morale
-                # We need to skip the header info to get to the data
+                # Metadata Parsing
                 marker = f_mod.read(6) # DW2MOD
                 if marker == b"DW2MOD":
-                    # Skip Stage ID
-                    f_mod.read(1)
-                    # Skip Strings (Author, Ver, Desc)
-                    for _ in range(3):
+                    f_mod.read(1) # StageID
+                    for _ in range(3): # Strings
                         l = int.from_bytes(f_mod.read(2), "little")
                         f_mod.read(l)
-                    # Skip Images
-                    img_cnt = int.from_bytes(f_mod.read(1), "little")
+                    img_cnt = int.from_bytes(f_mod.read(1), "little") # Images
                     for _ in range(img_cnt):
                         l = int.from_bytes(f_mod.read(4), "little")
                         f_mod.read(l)
                     
-                    # Check for Morale Block
+                    # Morale Block
                     m_marker = f_mod.read(6)
                     if m_marker == b"MORALE":
                         stg_name = STAGE_NAMES[stage_id]
                         if stg_name in STAGE_MORALE_DATA:
                             for side_id in [1, 2]:
-                                # Read from Mod
                                 count = int.from_bytes(f_mod.read(2), "little")
                                 data = f_mod.read(count * 2)
-                                
-                                # Write to Bin
                                 bin_off, bin_count = STAGE_MORALE_DATA[stg_name][side_id]
-                                # Safety: don't write more than the bin expects
                                 write_len = min(len(data), bin_count * 2)
-                                
                                 f_bin.seek(bin_off)
                                 f_bin.write(data[:write_len])
+                    elif m_marker == b"NOMORL" or m_marker == b"NOMORALE":
+                        # Handle both new (6) and old (8) tags for compatibility
+                        if m_marker == b"NOMORALE": pass
+                        pass
+                        
+                    # Master List Block
+                    mst_marker = f_mod.read(6)
+                    if mst_marker == b"MASTER":
+                        stg_name = STAGE_NAMES[stage_id]
+                        if stg_name in MASTER_OFFSETS:
+                            while True:
+                                t_bytes = f_mod.read(1)
+                                if not t_bytes: break
+                                
+                                type_id = int.from_bytes(t_bytes, "little")
+                                len_bytes = f_mod.read(4)
+                                data_len = int.from_bytes(len_bytes, "little")
+                                data = f_mod.read(data_len)
+                                
+                                if type_id in MASTER_OFFSETS[stg_name]:
+                                    bin_off, bin_count = MASTER_OFFSETS[stg_name][type_id]
+                                    unit_size = 1 if type_id == 3 else 4
+                                    max_size = bin_count * unit_size
+                                    f_bin.seek(bin_off)
+                                    f_bin.write(data[:max_size])
 
-            # Update State
             self.mod_state[sid_str] = mod["filename"]
             self._save_state()
             self._refresh_tree()
@@ -930,7 +1054,6 @@ class HighEndModManager(tk.Toplevel):
             messagebox.showinfo("Info", "This mod is not enabled.")
             return
 
-        # Restore from Backup
         bk_name = f"Original_{STAGE_NAMES[stage_id].replace(' ', '')}.stage"
         bk_path = os.path.join(BACKUP_DIR, bk_name)
         
@@ -941,24 +1064,49 @@ class HighEndModManager(tk.Toplevel):
         try:
             with open(bk_path, "rb") as f_bk, open(self.bin_path, "r+b") as f_bin:
                 # Restore Stage Data
+                # This reads 16384 (Data) + 32 (Offsets) = 16416 bytes
                 payload = f_bk.read(16416)
+                
                 target_offsets = STAGE_OFFSETS[stage_id]
                 chunk_size = 64 * 32
                 for i, target_off in enumerate(target_offsets):
                     chunk_data = payload[i*chunk_size : (i+1)*chunk_size]
                     f_bin.seek(target_off)
                     f_bin.write(chunk_data)
-                
-                # Restore Morale (If present)
+
+                # Restore Morale
                 m_marker = f_bk.read(6)
                 if m_marker == b"MORALE":
                     stg_name = STAGE_NAMES[stage_id]
                     if stg_name in STAGE_MORALE_DATA:
                         for side_id in [1, 2]:
-                            bin_off, bin_count = STAGE_MORALE_DATA[stg_name][side_id]
-                            data = f_bk.read(bin_count * 2)
+                            count = int.from_bytes(f_bk.read(2), "little")
+                            data = f_bk.read(count * 2)
+                            
+                            bin_off = STAGE_MORALE_DATA[stg_name][side_id][0]
                             f_bin.seek(bin_off)
                             f_bin.write(data)
+                elif m_marker == b"NOMORL":
+                    pass
+
+                # Restore Master List
+                mst_marker = f_bk.read(6)
+                if mst_marker == b"MASTER":
+                    stg_name = STAGE_NAMES[stage_id]
+                    if stg_name in MASTER_OFFSETS:
+                        while True:
+                            t_bytes = f_bk.read(1)
+                            if not t_bytes: break
+                            
+                            type_id = int.from_bytes(t_bytes, "little")
+                            len_bytes = f_bk.read(4)
+                            data_len = int.from_bytes(len_bytes, "little")
+                            data = f_bk.read(data_len)
+                            
+                            if type_id in MASTER_OFFSETS[stg_name]:
+                                bin_off, _ = MASTER_OFFSETS[stg_name][type_id]
+                                f_bin.seek(bin_off)
+                                f_bin.write(data)
             
             self.mod_state[sid_str] = None
             self._save_state()
@@ -974,7 +1122,7 @@ class DW2CoordinateGuider:
     def __init__(self, root):
         self.root = root
         self.root.title("DW2 Visual Guider")
-        # SAFE RESOLUTION: 1280x768 fits on 1080p screens even at 125% scaling
+        # 1280x768 fits on 1080p screens even at 125% scaling
         self.root.geometry("1280x768") 
         
         self.base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -1172,6 +1320,42 @@ class DW2CoordinateGuider:
         tab_list = tk.Frame(self.notebook)
         self.notebook.add(tab_list, text="  Unit List and Add  ")
 
+        # Tab 3, Master List
+        tab_master = tk.Frame(self.notebook)
+        self.notebook.add(tab_master, text="  Model/Moveset  ")
+
+        # Create Scrollable Canvas
+        m_canvas = tk.Canvas(tab_master, bd=0, highlightthickness=0)
+        m_scrollbar = tk.Scrollbar(tab_master, orient="vertical", command=m_canvas.yview)
+        
+        # This frame will hold the dynamic content
+        self.m_scroll_frame = tk.Frame(m_canvas)
+
+        self.m_scroll_frame.bind(
+            "<Configure>",
+            lambda e: m_canvas.configure(scrollregion=m_canvas.bbox("all"))
+        )
+
+        m_window = m_canvas.create_window((0, 0), window=self.m_scroll_frame, anchor="nw")
+
+        # Force width to match canvas
+        m_canvas.bind(
+            "<Configure>",
+            lambda e: m_canvas.itemconfig(m_window, width=e.width)
+        )
+
+        m_canvas.configure(yscrollcommand=m_scrollbar.set)
+
+        m_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        m_canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+        # Mousewheel support
+        def _on_master_mousewheel(event):
+            m_canvas.yview_scroll(int(-1*(event.delta/120)), "units")
+        
+        m_canvas.bind("<Enter>", lambda _: m_canvas.bind_all("<MouseWheel>", _on_master_mousewheel))
+        m_canvas.bind("<Leave>", lambda _: m_canvas.unbind_all("<MouseWheel>"))
+
         # Add Unit Area
         add_frame = tk.LabelFrame(tab_list, text="Add New Unit")
         add_frame.pack(fill=tk.X, pady=10, padx=5)
@@ -1228,6 +1412,160 @@ class DW2CoordinateGuider:
         self.lbl_zoom = tk.Label(zoom_frame, text="100%", font=("Arial", 10))
         self.lbl_zoom.pack(side=tk.LEFT, padx=10)
 
+    def _on_master_combo_keyrelease(self, event, full_list):
+        """Dynamic filtering for Master List dropdowns"""
+        combo = event.widget
+        if event.keysym in ['Up', 'Down', 'Return', 'Enter']:
+            return
+
+        value = combo.get()
+        if value == '':
+            combo['values'] = full_list
+        else:
+            data = []
+            for item in full_list:
+                if value.lower() in item.lower():
+                    data.append(item)
+            combo['values'] = data
+
+    def refresh_master_tab(self):
+        """Rebuilds Tab 3 using values from self.stage_master_data"""
+        for widget in self.m_scroll_frame.winfo_children():
+            widget.destroy()
+        
+        self.master_vars = {} 
+        
+        stage_name = STAGE_NAMES[self.current_stage_index]
+        if stage_name not in MASTER_OFFSETS:
+            tk.Label(self.m_scroll_frame, text="No Master List data for this stage.", fg="red").pack(pady=20)
+            return
+
+        data_map = MASTER_OFFSETS[stage_name]
+        
+        # Helper to build a section
+        def build_section(title, data_key, prefix, ref_list):
+            if data_key not in data_map: return
+            
+            _, count = data_map[data_key]
+            
+            # Header
+            header = tk.Label(self.m_scroll_frame, text=f"{title} ({count} Slots)", 
+                              bg="#ddd", font=("Arial", 9, "bold"))
+            header.pack(fill=tk.X, pady=(10, 5), padx=5)
+
+            grid_frame = tk.Frame(self.m_scroll_frame)
+            grid_frame.pack(fill=tk.X, padx=5)
+
+            r, c = 0, 0
+            for i in range(count):
+                key = f"{prefix}_{i}"
+                lbl_text = f"Slot {i+1}"
+                
+                tk.Label(grid_frame, text=lbl_text + ":").grid(row=r, column=c*2, sticky="e", padx=5, pady=2)
+                
+                cb = ttk.Combobox(grid_frame, values=ref_list, width=22)
+                cb.bind('<KeyRelease>', lambda event, lst=ref_list: self._on_master_combo_keyrelease(event, lst))
+                cb.grid(row=r, column=c*2+1, sticky="w", padx=5, pady=2)
+                
+                # Set Value from Memory
+                current_val = self.stage_master_data.get(key, 0)
+                
+                # Reverse Lookup for Display (ID -> Name)
+                # We need to find the string in ref_list that contains ({current_val})
+                display_str = str(current_val)
+                suffix = f"({current_val})"
+                for item in ref_list:
+                    if item.endswith(suffix):
+                        display_str = item
+                        break
+                
+                cb.set(display_str)
+
+                self.master_vars[key] = cb
+                
+                c += 1
+                if c > 1: 
+                    c = 0
+                    r += 1
+
+        # Build Sections
+        build_section("Current Stage's Movesets", 1, "moveset", MOVESET_COMBO_LIST)
+        build_section("Current Stage's Models", 2, "model", MODEL_COMBO_LIST)
+        build_section("Current Army Colors", 3, "color", COLOR_COMBO_LIST)
+
+        # Buttons
+        btn_frame = tk.Frame(self.m_scroll_frame)
+        btn_frame.pack(fill=tk.X, pady=20)
+        
+        # Changed to revert since we are in memory
+        tk.Button(btn_frame, text="Revert to Original", command=self.revert_master_list, 
+                  bg="#ffdddd", height=2).pack(side=tk.LEFT, fill=tk.X, expand=True, padx=5)
+        
+        # Changed to save
+        tk.Button(btn_frame, text="Save Changes", command=self.apply_master_changes, 
+                  bg="#ccffcc", height=2).pack(side=tk.LEFT, fill=tk.X, expand=True, padx=5)
+
+    def revert_master_list(self):
+        """Reloads Master Data from BIN (Discarding unsaved edits)"""
+        if not self.bin_path: return
+        if messagebox.askyesno("Confirm", "Discard changes and reload from file?"):
+            try:
+                stg_name = STAGE_NAMES[self.current_stage_index]
+                if stg_name in MASTER_OFFSETS:
+                    data_map = MASTER_OFFSETS[stg_name]
+                    types = [(1, "moveset", 4), (2, "model", 4), (3, "color", 1)]
+                    
+                    with open(self.bin_path, "rb") as f:
+                        for type_id, prefix, size in types:
+                            if type_id in data_map:
+                                offset, count = data_map[type_id]
+                                f.seek(offset)
+                                for i in range(count):
+                                    val = int.from_bytes(f.read(size), "little")
+                                    key = f"{prefix}_{i}"
+                                    self.stage_master_data[key] = val
+                
+                self.refresh_master_tab()
+                messagebox.showinfo("Reverted", "Master list reverted to file version.")
+            except Exception as e:
+                messagebox.showerror("Error", f"Failed to revert: {e}")
+
+    def apply_master_changes(self):
+        """Updates internal memory (self.stage_master_data) from UI widgets"""
+        count_updated = 0
+        
+        # Safe limit constants
+        MAX_32 = 0xFFFFFFFF
+        MAX_8  = 0xFF
+        
+        for key, cb in self.master_vars.items():
+            raw_str = cb.get().strip()
+            if not raw_str: continue # Skip empty
+            
+            # Determine max size based on key prefix
+            is_color = "color" in key
+            limit = MAX_8 if is_color else MAX_32
+            
+            val = 0
+            try:
+                # Try Extract ID from Name (ID)
+                if "(" in raw_str and raw_str.endswith(")"):
+                    val_part = raw_str.split("(")[-1].strip(")")
+                    val = int(val_part)
+                # Try Raw Int
+                else:
+                    val = int(raw_str)
+            except ValueError:
+                # If parsing fails (e.g. Type to Filter), default to 0 to prevent crashes
+                val = 0
+            # Ensure value is unsigned and within bounds
+            val = max(0, min(val, limit))
+            
+            self.stage_master_data[key] = val
+            count_updated += 1
+            
+        messagebox.showinfo("Success", f"Saved {count_updated} entries to memory.\n")
+
     def _on_combo_keyrelease(self, event):
         # Get the widget that triggered the event
         combo = event.widget
@@ -1238,7 +1576,7 @@ class DW2CoordinateGuider:
         # Get current text
         value = event.widget.get()
         
-        # If empty, reset to full list
+        # If empty reset to full list
         if value == '':
             combo['values'] = self.all_unit_values
         else:
@@ -1687,34 +2025,37 @@ class DW2CoordinateGuider:
     def load_stage_data(self, stage_idx):
         self.current_stage_index = stage_idx
         self.slots = [] 
+        self.stage_master_data = {} # In-Memory Storage for Master List
+        
         self.load_image(MAP_FILES[stage_idx])
         
         if not self.bin_path or not os.path.exists(self.bin_path):
             self.lbl_selected.config(text="DW2.bin not loaded", fg="red")
-            self.refresh_markers(); self.refresh_listbox(); return
+            self.refresh_markers()
+            self.refresh_listbox()
+            return
 
         try:
             with open(self.bin_path, "rb") as f:
-                # read unit slots
+                # Read Unit Slots
                 for block_offset in STAGE_OFFSETS[stage_idx]:
                     f.seek(block_offset)
                     for _ in range(64):
                         chunk = f.read(32)
                         if len(chunk) != 32: break
-                        slot_data = {"raw": bytearray(chunk), "morale": 0} # Init morale
+                        slot_data = {"raw": bytearray(chunk), "morale": 0}
                         for _, key, offset, size in UNIT_DATA_FIELDS:
                             val = int.from_bytes(chunk[offset:offset+size], "little")
                             slot_data[key] = val
                         self.slots.append(slot_data)
 
-                # read morale data (If available for this stage)
+                # Read Morale Data
                 stg_name = STAGE_NAMES[stage_idx]
                 if stg_name in STAGE_MORALE_DATA:
                     for side_id in [1, 2]:
                         m_off, m_count = STAGE_MORALE_DATA[stg_name][side_id]
                         f.seek(m_off)
                         
-                        # Read all morale values for this side
                         morale_list = []
                         for _ in range(m_count):
                             morale_list.append(int.from_bytes(f.read(2), "little"))
@@ -1724,44 +2065,74 @@ class DW2CoordinateGuider:
                         
                         m_idx = 0
                         for i in range(start_slot, end_slot):
-                            # Side 2 uses Relative Index (0-255), not Absolute (256-511)
-                            # If I am at absolute slot 300, my own_slot value will be 44 (300-256)
                             target_val = i if side_id == 1 else (i - 256)
-                            
                             if self.slots[i]["own_slot"] == target_val and self.slots[i]["leader"] != 255:
                                 if m_idx < len(morale_list):
                                     self.slots[i]["morale"] = morale_list[m_idx]
                                     m_idx += 1
-        
-            self.selected_indices.clear()
-            self._update_editor_panel()
+
+                # Read Master List Data
+                if stg_name in MASTER_OFFSETS:
+                    data_map = MASTER_OFFSETS[stg_name]
+                    # Types: 1=Moveset(4), 2=Model(4), 3=Color(1)
+                    types = [(1, "moveset", 4), (2, "model", 4), (3, "color", 1)]
+                    
+                    for type_id, prefix, size in types:
+                        if type_id in data_map:
+                            offset, count = data_map[type_id]
+                            f.seek(offset)
+                            for i in range(count):
+                                val = int.from_bytes(f.read(size), "little")
+                                key = f"{prefix}_{i}"
+                                self.stage_master_data[key] = val
+            
         except Exception as e:
             messagebox.showerror("Error", f"Failed to read binary:\n{e}")
             return
 
+        # Refresh UI
+        # Clear Selection from previous stage
+        self.selected_indices.clear()
+        self._update_editor_panel()
+        
+        # Refresh Visuals
+        self.refresh_master_tab() 
         self.refresh_markers()
         self.refresh_listbox()
         self.update_caps()
         self._update_global_morale()
 
     def save_mod_file(self):
-        """Opens the Stage Mod Creator instead of direct save"""
+        """Opens the Stage Mod Creator using In-Memory Data"""
         if not self.slots: return
+        
+        # Prepare Master List Data from Memory
+        master_data_export = {}
+        stage_name = STAGE_NAMES[self.current_stage_index]
+        
+        if stage_name in MASTER_OFFSETS:
+            data_map = MASTER_OFFSETS[stage_name]
+            prefixes = {1: "moveset", 2: "model", 3: "color"}
+            
+            for type_id, prefix in prefixes.items():
+                if type_id in data_map:
+                    _, count = data_map[type_id]
+                    for i in range(count):
+                        key = f"{prefix}_{i}"
+                        # Retrieve from memory, default to 0
+                        val = self.stage_master_data.get(key, 0)
+                        master_data_export[key] = val
+
         # Open Creator Window
-        StageModCreator(self.root, self.slots, self.current_stage_index)
+        StageModCreator(self.root, self.slots, self.current_stage_index, master_data_export)
 
     def generate_pnach(self):
         if not self.slots: return
         
-        # Constants
         # Unit Data Base Addresses (US Version)
-        # Side 1 (Slots 0-255) ram Base
         UNIT_RAM_BASE_S1 = 0x203E4980 
-        
-        # Side 2 (Slots 256-511) ram Base
         UNIT_RAM_BASE_S2 = 0x203E6960
         
-        # Morale Data Base Addresses (US Version)
         MORALE_RAM_MAP = {
             "Yellow Turban Rebellion": 0x2036EB52,
             "Hu Lao Gate": 0x2036EC62,
@@ -1786,79 +2157,105 @@ class DW2CoordinateGuider:
                 f.write(f"// Generated by DW2 Visual Guider\n")
                 f.write(f"// Stage: {STAGE_NAMES[self.current_stage_index]}\n\n")
 
-                # Write squad data (Active Slots Only)
-
-                f.write(f"\n// Side 1\n")
-                
-                # Side 1 (0 - 255)
+                # Squad Data
+                f.write(f"// Side 1 Units\n")
                 base_phys_s1 = UNIT_RAM_BASE_S1 & 0x0FFFFFFF
-                count_s1 = 0
-                for i in range(256):
+                
+                # Range 0 to 254 (255 units max)
+                # Skips index 255 to prevent overlapping Side 2 RAM
+                for i in range(255): 
                     slot = self.slots[i]
-                    
-                    # Filter: Skip Empty (255) and Zeroed Slots (0/0/0)
-                    # This prevents writing null data for empty bin slots
                     is_active = slot["leader"] != 255
                     is_not_zero = not (slot["leader"] == 0 and slot["x"] == 0 and slot["y"] == 0)
                     
                     if is_active and is_not_zero:
-                        # Addr = Base S1 + (Index * 32)
                         current_addr = base_phys_s1 + (i * 32)
                         self._write_slot_pnach(f, slot, current_addr)
-                        count_s1 += 1
 
-                f.write(f"\n// Side 2\n")
-
-                # Side 2 (256 - 511)
+                f.write(f"\n// Side 2 Units\n")
                 base_phys_s2 = UNIT_RAM_BASE_S2 & 0x0FFFFFFF
-                count_s2 = 0
-                for i in range(256, 512):
+                
+                # Range 256 to 510 (255 units max)
+                # Skips index 511 to prevent overwriting next memory block
+                for i in range(256, 511):
                     slot = self.slots[i]
-                    
-                    # Filter: Skip Empty (255) and Zeroed Slots (0/0/0)
                     is_active = slot["leader"] != 255
                     is_not_zero = not (slot["leader"] == 0 and slot["x"] == 0 and slot["y"] == 0)
                     
                     if is_active and is_not_zero:
-                        # Relative Index = i - 256
-                        # Addr = Base S2 + (Relative Index * 32)
                         current_addr = base_phys_s2 + ((i - 256) * 32)
                         self._write_slot_pnach(f, slot, current_addr)
-                        count_s2 += 1
 
-                # Write Morale Data
-                
+                # Morale Data
                 stg_name = STAGE_NAMES[self.current_stage_index]
                 if stg_name in MORALE_RAM_MAP:
                     f.write(f"\n// Morale Data\n")
+                    morale_base_phys = MORALE_RAM_MAP[stg_name] & 0x0FFFFFFF
                     
-                    morale_base_virt = MORALE_RAM_MAP[stg_name]
-                    morale_base_phys = morale_base_virt & 0x0FFFFFFF
+                    # Default Limits
+                    s1_limit = 12 
+                    s2_limit = 12
                     
-                    # Side 1
-                    s1_values = []
-                    for i in range(256):
-                         if self.slots[i]["leader"] != 255 and self.slots[i]["own_slot"] == i:
-                             s1_values.append(self.slots[i].get("morale", 0))
+                    # Retrieve Specific Stage Constraints
+                    if stg_name in STAGE_MORALE_DATA:
+                         _, s1_limit = STAGE_MORALE_DATA[stg_name][1]
+                         _, s2_limit = STAGE_MORALE_DATA[stg_name][2]
+
+                    # Side 1 Morale
+                    s1_values = [self.slots[i].get("morale", 0) for i in range(256) 
+                                 if self.slots[i]["leader"] != 255 and self.slots[i]["own_slot"] == i]
                     
+                    # Truncate to safe limit
+                    s1_values = s1_values[:s1_limit]
+
                     for m_idx, val in enumerate(s1_values):
                         addr = morale_base_phys + (m_idx * 2)
                         f.write(f"patch=1,EE,{addr:08X},short,{val:04X}\n")
-                        
-                    # Side 2
-                    # Starts 0x18 (24 bytes) after Side 1
-                    s2_base_phys = morale_base_phys + 0x18
                     
-                    s2_values = []
-                    for i in range(256, 512):
-                        if self.slots[i]["leader"] != 255 and self.slots[i]["own_slot"] == (i - 256):
-                            s2_values.append(self.slots[i].get("morale", 0))
-                            
+                    # Side 2 Morale
+                    s2_base_phys = morale_base_phys + 0x18
+                    s2_values = [self.slots[i].get("morale", 0) for i in range(256, 512) 
+                                 if self.slots[i]["leader"] != 255 and self.slots[i]["own_slot"] == (i - 256)]
+                    
+                    # Truncate to safe limit
+                    s2_values = s2_values[:s2_limit]
+
                     for m_idx, val in enumerate(s2_values):
                         addr = s2_base_phys + (m_idx * 2)
                         f.write(f"patch=1,EE,{addr:08X},short,{val:04X}\n")
 
-            messagebox.showinfo("Success", f"PNACH generated successfully!\nActive Units: {count_s1} (S1) + {count_s2} (S2)")
+                # Master List Data
+                if self.current_stage_index < len(MASTER_RAM_MAP):
+                    f.write(f"\n// Master List Data (Movesets, Models, Colors)\n")
+                    ram_data = MASTER_RAM_MAP[self.current_stage_index]
+                    
+                    if stg_name in MASTER_OFFSETS:
+                        offsets_map = MASTER_OFFSETS[stg_name]
+                        
+                        types = [
+                            (1, "mov", "moveset", 4, "word"),
+                            (2, "mod", "model", 4, "word"),
+                            (3, "col", "color", 1, "byte")
+                        ]
+                        
+                        for type_id, ram_key, prefix, size, pnach_type in types:
+                            if type_id in offsets_map:
+                                _, count = offsets_map[type_id]
+                                base_addr = ram_data[ram_key] & 0x0FFFFFFF
+                                
+                                for i in range(count):
+                                    key = f"{prefix}_{i}"
+                                    val = self.stage_master_data.get(key, 0)
+                                    
+                                    # Calc Address
+                                    addr = base_addr + (i * size)
+                                    
+                                    if size == 4:
+                                        f.write(f"patch=1,EE,{addr:08X},{pnach_type},{val:08X}\n")
+                                    else:
+                                        f.write(f"patch=1,EE,{addr:08X},{pnach_type},{val:02X}\n")
+
+            messagebox.showinfo("Success", f"PNACH generated successfully.")
             
         except Exception as e:
             messagebox.showerror("Error", f"Failed to generate PNACH:\n{e}")
@@ -2274,12 +2671,12 @@ class DW2CoordinateGuider:
             idx = list(self.selected_indices)[0]
             name = get_unit_name(self.slots[idx]["leader"])
             
-            # VISUAL FIX: Show Relative Index
+            # Show Relative Index
             is_s2 = idx >= 256
             display_idx = (idx - 256) if is_s2 else idx
             side_lbl = "Side 2" if is_s2 else "Side 1"
             
-            # Header now says: "Slot 5 (Side 2) | Name"
+            # Header now says something like Slot 5 (Side 2) | Name
             self.lbl_selected.config(text=f"Slot {display_idx} ({side_lbl}) | {name}", fg="black")
         else:
             self.lbl_selected.config(text=f"Squad Selection: {count} Units", fg="purple")
@@ -2364,7 +2761,7 @@ class DW2CoordinateGuider:
                     for idx in self.selected_indices:
                         self.slots[idx][key] = val
 
-            # Save Morale (Only if editable)
+            # Save Morale if editable
             if self.entry_morale["state"] == "normal":
                 try:
                     val = int(self.var_morale.get())
@@ -2437,7 +2834,7 @@ class DW2CoordinateGuider:
             if slot["leader"] == 255 or (slot["x"] == 0 and slot["y"] == 0):
                 continue
             
-            # VISUAL FIX: Calculate Relative Index for Display Only
+            # Calculate Relative Index for Display Only
             is_s2 = i >= 256
             side_str = "S2" if is_s2 else "S1"
             display_idx = (i - 256) if is_s2 else i
@@ -2450,7 +2847,7 @@ class DW2CoordinateGuider:
             if filter_txt and filter_txt not in display_text.lower(): continue
             
             self.listbox.insert(tk.END, display_text)
-            self.list_map.append(i) # We still store the ABSOLUTE index (i) for logic
+            self.list_map.append(i) # We still store the absolute index (i) for logic
             
             if i in self.selected_indices:
                 indices_to_select.append(row_idx)
