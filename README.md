@@ -1,6 +1,6 @@
 # Dynasty Warriors 2 Visual Guider Info
 
-Dynasty Warriors 2 Visual Guider is a High End GUI Standalone Stage Data modding tool that simplifies modding Stage Data by providing a visual experience for modding. It comes with full modding support of all stages in DW2, the coordinate guider system is built into it and redesigned, a high end mod manager (explained in Features of Visual Guider For Stage Modding), Genetic Algorithm support which i'll cover in Genetic Algorithm Info, Auto pnach generation (review Generate Pnach Section), and many more features.
+Dynasty Warriors 2 Visual Guider is a High End GUI Standalone Stage Data modding tool that simplifies modding Stage Data by providing a visual experience for modding. It comes with full modding support of all stages in DW2, the coordinate guider system is built into it and redesigned, a high end mod manager (explained in Features of Visual Guider For Stage Modding), Genetic Algorithm support which i'll cover in Genetic Algorithm Info, Auto pnach generation (review Generate Pnach Section), and many more features. Check Upcoming Features Section for planned features.
 
 # Requirements To Use Visual Guider
 
@@ -95,3 +95,9 @@ Mod Manager is only for file mods, it's not used for pnach handling. It automati
 # Extra Info
 
 I decided to make Visual Guider a single file instead of a package release (having multiple python files within a folder for those who aren't aware), i'm not changing that. The code is clean and well organized.
+
+# Upcoming Features Section
+
+Master list modding (affects what models and movesets are allowed for each stage)
+
+<img width="1271" height="785" alt="z7" src="https://github.com/user-attachments/assets/164fdfd0-d15a-4092-9c8a-c7ba5d2d5950" />=
