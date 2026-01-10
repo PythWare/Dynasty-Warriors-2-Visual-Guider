@@ -103,5 +103,4 @@ I decided to make Visual Guider a single file instead of a package release (havi
 # Current Version Section
 
 Master list modding (affects what models, movesets, army colors are allowed for each stage) is now implemented. I suggest joining the musou warriors discord server for any questions regarding this.
-
-<img width="1271" height="785" alt="z7" src="https://github.com/user-attachments/assets/164fdfd0-d15a-4092-9c8a-c7ba5d2d5950" />=
+<img width="1272" height="788" alt="z11" src="https://github.com/user-attachments/assets/f119530c-dd96-4784-bb53-98358f8a9279" />
