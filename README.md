@@ -8,7 +8,7 @@ Python 3 as well as Pillow. Pillow is an imaging library. To install pillow, ope
 
 The US version of Dynasty Warriors 2.
 
-If you update to a new version of Visual Guider, delete your backups folder that Visual Guider creates for stages before running the new version and make sure any file mods you have enabled are disabled because Version 1.4 of Visual Guider changes backup/mod creation by expanding the mod file format to include master list data.
+If you update to a new version of Visual Guider, delete your backups folder that Visual Guider creates for stages before running the new version and make sure any file mods you have enabled are disabled because Version 1.5 of Visual Guider changes backup/mod creation by expanding the mod file format to include master list data.
 
 # Credits
 
@@ -64,7 +64,7 @@ Visual Guider also comes with a Mod Creator/Mod Manager as part of it to make it
 
 There are Genetic Algorithm features as part of Visual Guider which I cover in Genetic Algorithm Info.
 
-# Screenshots of Visual Guider (version 1.1, current version is 1.4 which includes a new design for the GUI)
+# Screenshots of Visual Guider (version 1.1, current version is 1.5 which includes a new design for the GUI)
 <img width="1833" height="934" alt="s1" src="https://github.com/user-attachments/assets/c1eae034-b8a5-4c17-8941-2d37e6873e17" />
 <img width="1837" height="929" alt="s2" src="https://github.com/user-attachments/assets/d37ec1d3-bc54-4917-9297-f215e570cf66" />
 <img width="1840" height="929" alt="s3" src="https://github.com/user-attachments/assets/fff692fe-dd08-4543-a99f-0331aee3cf36" />
