@@ -339,11 +339,11 @@ MASTER_MOVESETS = {
 }
 
 MASTER_COLORS = {
-    0: "Blue",
-    1: "Red",
-    2: "Green",
-    3: "Purple",
-    4: "Yellow"
+    0: "1st Color",
+    1: "2nd Color",
+    2: "3rd Color",
+    3: "4th Color",
+    4: "5th Color"
 }
 
 # Helper to generate formatted lists for the Comboboxes
